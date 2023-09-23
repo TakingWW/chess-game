@@ -1,8 +1,5 @@
 package com.joao.objects;
 
-import java.beans.ParameterDescriptor;
-import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,18 +9,18 @@ import java.util.Map;
 public class Board {
     public boolean gameOver = false;
     private Player player;
-    private Player player2 = new Player();
+    private Player bot = new Bot();
     private Player toPlay;
     private List<Square> squares = new ArrayList<>(64);
     private String map;
 
-    public Board(Player player) {
+    public Board(Player player) throws PlayerException {
 	this.player = player;
 	if (player.getColor() == Piece.COLOR.BLACK) {
-	    player2.setChoice(Piece.COLOR.WHITE);
-	    toPlay = player2;
+	    bot.setColor(Piece.COLOR.WHITE.print().charAt(0));
+	    toPlay = bot;
 	} else {
-	    player2.setChoice(Piece.COLOR.BLACK);
+	    bot.setColor(Piece.COLOR.BLACK.print().charAt(0));
 	    toPlay = player;
 	}
 	for (int j = 0; j < 8; j++) {
@@ -97,13 +94,22 @@ public class Board {
 	if (move.length() != 3) {
 	    throw new IlegalMoveException("Move wrote in wrong format");
 	}
+	if (!toPlay.equals(player)) {
+	    throw new IlegalMoveException("Wait for your turn");
+	}
+	
 	ArrayList<String> piecesChar = new ArrayList<>(Arrays.asList(
-	    "P", "N", "B", "R", "Q", "K"
+	    Piece.TYPE.PAWN.getName(),
+	    Piece.TYPE.KNIGHT.getName(),
+	    Piece.TYPE.BISHOP.getName(),
+	    Piece.TYPE.ROOK.getName(),
+	    Piece.TYPE.QUEEN.getName(),
+	    Piece.TYPE.KING.getName()
 	));
 
 	Map<String, Integer> cols = Map.of("a", 1 , "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
 	ArrayList<String> rows = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-	
+
 	if (!piecesChar.contains(String.valueOf(move.charAt(0)).toUpperCase())) {
 	    throw new IlegalMoveException("This piece does not exist");
 	}
@@ -159,7 +165,7 @@ public class Board {
 	    throw new IlegalMoveException();
 	}
 	if (toPlay.equals(player)) {
-	    toPlay = player2;
+	    toPlay = bot;
 	} else {
 	    toPlay = player;
 	}

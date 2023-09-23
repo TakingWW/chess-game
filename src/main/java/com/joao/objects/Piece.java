@@ -175,10 +175,14 @@ public class Piece {
 
 	for (Square square : squares) {
 	    Position position = square.getPosition();
+	    Piece piece = square.getPiece();
 	    coordinates.add(position);
-	    if (square.getPiece() == null) {
-		if (type == TYPE.PAWN & (position.x == currentPosition.x + 1 | position.x == currentPosition.x - 1)) {
-		    toRemove.add(position);
+
+	    if (piece == null) {
+		if (type == TYPE.PAWN ) {
+		    if ((position.x == currentPosition.x + 1 | position.x == currentPosition.x - 1)) {
+			toRemove.add(position);
+		    }
 		}
 		continue;
 	    }
@@ -186,7 +190,9 @@ public class Piece {
 	    for (int i = 1; i < 8; i++) {
 		toRemove.add(position.sum(Position.multiply(i, abs)));
 	    }
-	    if (square.getPiece().getColor() == color) {
+	    if (piece.getColor() == color) {
+		toRemove.add(position);
+	    } else if (piece.getType() == Piece.TYPE.PAWN & square.getPosition().x == position.x) {
 		toRemove.add(position);
 	    }
 	}
