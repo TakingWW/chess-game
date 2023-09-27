@@ -7,6 +7,7 @@ import java.util.List;
 public class Piece {
     private Piece.TYPE type;
     private Piece.COLOR color;
+    public int moves;
     
     public static enum TYPE {
 	PAWN,
@@ -71,6 +72,7 @@ public class Piece {
 			return "";
 		}
 	    }
+	
 	public String print() {
 		switch(this) {
 		    case BLACK:
@@ -87,9 +89,11 @@ public class Piece {
 	this.type = type;
 	this.color = color;
     }
+    
     public Piece(Piece piece) {
 	this.type = piece.type;
 	this.color = piece.color;
+	this.moves = piece.moves;
     }
 
     public HashSet<Position> moves(Position currentPosition, List<Square> squares) {
@@ -143,28 +147,28 @@ public class Piece {
 		break;
 	    case QUEEN:
 		for (int i = 0; i < 8; i++) {
-		    positions.add(currentPosition.sum(0, i));
-		    positions.add(currentPosition.sum(0, -i));
-		    positions.add(currentPosition.sum(i, 0));
+		    positions.add(currentPosition.sum( 0,  i));
+		    positions.add(currentPosition.sum( 0, -i));
+		    positions.add(currentPosition.sum( i,  0));
 		    positions.add(currentPosition.sum(-i, 0));
 
 		}
 	    	for (int i = 0; i < 8; i++) {
-		    positions.add(currentPosition.sum(i, i));
-		    positions.add(currentPosition.sum(-i, i));
-		    positions.add(currentPosition.sum(i, -i));
+		    positions.add(currentPosition.sum( i,  i));
+		    positions.add(currentPosition.sum(-i,  i));
+		    positions.add(currentPosition.sum( i, -i));
 		    positions.add(currentPosition.sum(-i, -i));
 		}
 		break;
 	    case KING:
-		positions.add(currentPosition.sum(1, 1));
-		positions.add(currentPosition.sum(1, -1));
-		positions.add(currentPosition.sum(-1, 1));
+		positions.add(currentPosition.sum( 1,  1));
+		positions.add(currentPosition.sum( 1, -1));
+		positions.add(currentPosition.sum(-1,  1));
 		positions.add(currentPosition.sum(-1, -1));
-		positions.add(currentPosition.sum(0, 1));
-		positions.add(currentPosition.sum(1, 0));
-		positions.add(currentPosition.sum(-1, 0));
-		positions.add(currentPosition.sum(0, -1));
+		positions.add(currentPosition.sum( 0,  1));
+		positions.add(currentPosition.sum( 1,  0));
+		positions.add(currentPosition.sum(-1,  0));
+		positions.add(currentPosition.sum( 0, -1));
 		break;
 	    default:
 		return null;
@@ -172,8 +176,9 @@ public class Piece {
 
 	HashSet<Position> coordinates = new HashSet<>();
 	HashSet<Position> toRemove = new HashSet<>();
-
+	int k = 0;
 	for (Square square : squares) {
+	    k++;
 	    Position position = square.getPosition();
 	    Piece piece = square.getPiece();
 	    coordinates.add(position);

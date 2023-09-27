@@ -6,5 +6,4 @@ public interface Player {
     public Piece.COLOR getColor();
     public String getName();
     public void setColor(char c) throws PlayerException;
-    public void initialize();
 }

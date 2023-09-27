@@ -12,6 +12,9 @@ public class Board {
     private Player bot = new Bot();
     private Player toPlay;
     private List<Square> squares = new ArrayList<>(64);
+    private List<Piece.TYPE> piecesName;
+    private Map<String, Integer> cols;
+
     private String map;
 
     public Board(Player player) throws PlayerException {
@@ -63,6 +66,17 @@ public class Board {
 		squares.add(square);
 	    }
 	}
+		
+	piecesName = new ArrayList<>(Arrays.asList(
+	    Piece.TYPE.PAWN,
+	    Piece.TYPE.KNIGHT,
+	    Piece.TYPE.BISHOP,
+	    Piece.TYPE.ROOK,
+	    Piece.TYPE.QUEEN,
+	    Piece.TYPE.KING
+	));
+
+	cols = Map.of("a", 1 , "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
     }
 
     public void draw() {
@@ -91,84 +105,89 @@ public class Board {
     }
 
     public void playMove(String move) throws IlegalMoveException {
-	if (move.length() != 3) {
-	    throw new IlegalMoveException("Move wrote in wrong format");
-	}
-	if (!toPlay.equals(player)) {
-	    throw new IlegalMoveException("Wait for your turn");
-	}
+	if (move.length() != 3) throw new IlegalMoveException("Move wrote in wrong format");
+	if (!toPlay.equals(player)) throw new IlegalMoveException("Not your turn");
+	if (cols.get(move.substring(1, 2)) == null) throw new IlegalMoveException("Square not found");
+	if (!cols.containsValue(Integer.parseInt(move.substring(2, 3)))) throw new IlegalMoveException("Square not found");
 	
-	ArrayList<String> piecesChar = new ArrayList<>(Arrays.asList(
-	    Piece.TYPE.PAWN.getName(),
-	    Piece.TYPE.KNIGHT.getName(),
-	    Piece.TYPE.BISHOP.getName(),
-	    Piece.TYPE.ROOK.getName(),
-	    Piece.TYPE.QUEEN.getName(),
-	    Piece.TYPE.KING.getName()
-	));
+	int xPos;
+	int yPos;
 
-	Map<String, Integer> cols = Map.of("a", 1 , "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
-	ArrayList<String> rows = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-
-	if (!piecesChar.contains(String.valueOf(move.charAt(0)).toUpperCase())) {
-	    throw new IlegalMoveException("This piece does not exist");
-	}
-	if (!rows.contains(move.substring(2, 3))) {
-	    throw new IlegalMoveException("This square does not exist");
-	}
-
-	int i;
-	int j;
-	
 	try {
-	    i = cols.get(String.valueOf(move.charAt(1)));
+	    xPos = cols.get(move.substring(1, 2)) - 1;
+	    yPos = Integer.parseInt(move.substring(2, 3)) - 1;
 	} catch (NullPointerException e) {
-	    throw new IlegalMoveException("This square does not exist");
+	    throw new IlegalMoveException("Square not found");
 	}
-	try {
-	    j = Integer.parseInt(move.substring(2,3));
 
-	    Position nextPosition = new Position(i - 1, j - 1);
-	    List<Square> possibleSquaresToMovePiece = new ArrayList<>();
+	Position nextPosition = new Position(xPos, yPos);
+	System.out.println(nextPosition);
+	Square squareTo = null;
+	Piece.TYPE piece = null;
+	
+	for (Square square : squares) {
+	    if (square.getPosition().equals(nextPosition)){
+		squareTo = square;
+	    }
+	}
 
-	    for (Square square : squares) {
-		Piece piece = square.getPiece();
-		if (piece == null) continue;
-		if (piece.getColor() != toPlay.getColor()) continue;
-		if (!piece.getType().getName().equals(String.valueOf(move.charAt(0)).toUpperCase())) continue;
+	for (Piece.TYPE type : piecesName) {
+	    if (move.substring(0, 1).equals(type.getName().toLowerCase())) {
+		piece = type;
+	    }
+	}
+	if (squareTo == null) throw new IlegalMoveException("Caguei");
+	if (piece == null) throw new IlegalMoveException("Caguei");
 
-		HashSet<Position> pos = piece.moves(square.getPosition(), squares);
-		if (pos.contains(nextPosition)) {
-		    possibleSquaresToMovePiece.add(square);
+	Square squareFrom = calculateSquare(piece, squareTo);
+	
+	movePiece(squareFrom, squareTo);
+	changeToPlay();
+
+    }
+
+    private Square calculateSquare(Piece.TYPE type, Square squareTo) throws IlegalMoveException {
+	Position nextPosition = squareTo.getPosition();
+	Square SquareFrom;
+	ArrayList<Square> squaresFrom = new ArrayList<>();
+
+	for (Square square : squares) {
+	    Piece piece = square.getPiece();
+	    
+	    if (piece == null) continue;
+	    if (piece.getType() != type) continue;
+	    if (piece.getColor() != toPlay.getColor()) continue;
+
+	    HashSet<Position> positions = piece.moves(square.getPosition(), squares);
+	    if (positions.contains(nextPosition)) squaresFrom.add(square);
+	}
+	int number = 0;
+	int size = squaresFrom.size();
+	if (size == 0) throw new IlegalMoveException("Move not found");
+	if (size > 1) {
+	    System.out.println("More than one move found");
+	    while (number == 0) {
+		try {
+		    System.out.print("Choose one square to move from: " + 1 + " to " + size + " in " + squaresFrom);
+		    number = Integer.parseInt(System.console().readLine()) - 1;
+
+		} catch (NumberFormatException | NullPointerException e) {
+		    throw new IlegalMoveException("You don't have this choice");
 		}
 	    }
-	    int size = possibleSquaresToMovePiece.size();
-	    int number = 0;
-	    if (size == 0) throw new IlegalMoveException("Ilegal move");
-	    if (size > 1) {
-		System.out.println("choose the square of the piece to move");
-		int k = 1;
-		for (Square square : possibleSquaresToMovePiece) {
-		    System.out.print("(" + k + ") " + square + " ");
-		    k += 1;
-		}
-		System.out.print(": ");
-		number = Integer.parseInt(System.console().readLine()) - 1;
-	    }
-	    for (Square square : squares) {
-		if (square.getPosition().equals(nextPosition)) {
-		    square.setPiece(possibleSquaresToMovePiece.get(number).getPiece());
-		    possibleSquaresToMovePiece.get(number).setPiece(null);
-		}
-	    }
-	} catch (NullPointerException | NumberFormatException e) {
-	    throw new IlegalMoveException();
 	}
-	if (toPlay.equals(player)) {
-	    toPlay = bot;
-	} else {
-	    toPlay = player;
-	}
+	
+	return squaresFrom.get(number);
+    }
+
+    private void movePiece(Square from, Square to) {
+	to.setPiece(from.getPiece());
+	from.setPiece(null);
+    }
+
+    private void changeToPlay() {
+	if (toPlay == player) toPlay = bot;
+	else toPlay = player;
     }
 
     public Player getToPlay() {

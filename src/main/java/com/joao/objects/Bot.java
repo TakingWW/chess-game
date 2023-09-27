@@ -25,8 +25,4 @@ public class Bot implements Player{
     public String getName() {
 	return name;
     }
-
-    public void initialize() {
-	name = "bot";
-    }
 }

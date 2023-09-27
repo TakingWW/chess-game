@@ -6,6 +6,30 @@ public class Player1 implements Player {
     private Piece.COLOR color;
     private String name;
 
+    public Player1() {
+	while (name == null) {
+	    try {
+		System.out.print("Take a nick name for youself: ");
+		String name = System.console().readLine();
+		setName(name);
+	    } catch (PlayerException e) {
+		e.printStackTrace();
+	    }
+	}
+
+	try {
+	    System.out.print("Choose your pieces color, W to white B to black: ");
+ 
+	    char color = (char) System.in.read();
+	    setColor(color);
+	} catch(IOException e) {
+	    e.printStackTrace();
+	} catch (PlayerException e) {
+	    System.out.println("Default color set to black");
+	    this.color = Piece.COLOR.BLACK;
+	}
+    }
+
     public void setName(String name) throws PlayerException {
 	if (name.contains(" ")) {
 	    throw new PlayerException("Names with spaces are not acepted");
@@ -29,30 +53,6 @@ public class Player1 implements Player {
 
     public String getName() {
 	return name;
-    }
-
-    public void initialize() {
-	while (name == null) {
-	    try {
-		System.out.print("Take a nick name for youself: ");
-		String name = System.console().readLine();
-		setName(name);
-	    } catch (PlayerException e) {
-		e.printStackTrace();
-	    }
-	}
-
-	try {
-	    System.out.print("Choose your pieces color, W to white B to black: ");
- 
-	    char color = (char) System.in.read();
-	    setColor(color);
-	} catch(IOException e) {
-	    e.printStackTrace();
-	} catch (PlayerException e) {
-	    System.out.println("Default color set to black");
-	    this.color = Piece.COLOR.BLACK;
-	}
     }
 
     @Override
