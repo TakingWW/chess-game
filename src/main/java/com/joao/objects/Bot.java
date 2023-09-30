@@ -2,21 +2,21 @@ package com.joao.objects;
 
 public class Bot implements Player{
     private String name;
-    private Piece.COLOR color;
+    private Color color;
     
     public void setName(String name) throws PlayerException {
 	this.name = name;
     }
 
-    public Piece.COLOR getColor() {
+    public Color getColor() {
 	return color;
     }
     
     public void setColor(char color) throws PlayerException {
 	if (color == 'w' | color == 'W') {
-	    this.color = Piece.COLOR.WHITE;
+	    this.color = Color.WHITE;
 	} else if (color == 'b' | color == 'B') {
-	    this.color = Piece.COLOR.BLACK;
+	    this.color = Color.BLACK;
 	} else {
 	    throw new PlayerException("Color not found");
 	}

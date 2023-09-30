@@ -1,43 +1,46 @@
 package com.joao.objects;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Map;
 
-public class Square {
-    // TODO colocar piece como optional
-    private Piece piece;
-    private Piece.COLOR color;
-    private Position position;
+import com.joao.objects.piece.Piece;
 
-    public Square(Piece piece, Piece.COLOR color, Position position) {
-	this.piece = piece;
-	this.color = color;
-	this.position = position;
+public class Square {
+    private Piece piece;
+    private Color color;
+    private Position position;
+	private List<Boolean> underAtack = new ArrayList<>(2);
+
+    public Square(Piece piece, Color color, Position position) {
+		this.piece = piece;
+		this.color = color;
+		this.position = position;
     }
 
     public Piece getPiece() {
-	return piece;
+		return piece;
     }
 
-    public Piece.COLOR getColor() {
-	return color;
+    public Color getColor() {
+		return color;
     }
 
     public Position getPosition() {
-	return position;
+		return position;
     }
 
     public void setPiece(Piece piece) {
-	this.piece = piece;
+		this.piece = piece;
     }
 
     @Override
     public String toString() {
-	Map<Integer, String> cols = Map.of(1 , "a", 2,  "b", 3, "c", 4, "d", 5, "e", 6, "f", 7, "g", 8, "h");
+		Map<Integer, String> cols = Map.of(1 , "a", 2,  "b", 3, "c", 4, "d", 5, "e", 6, "f", 7, "g", 8, "h");
 
-	String col = cols.get(position.x + 1);
-	String row = String.valueOf(position.y + 1);
-	return "" + col + row;
+		String col = cols.get(position.x + 1);
+		String row = String.valueOf(position.y + 1);
+		return "" + col + row;
     }
 }
