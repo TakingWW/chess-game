@@ -73,6 +73,6 @@ public class Knight implements Piece {
 
 	@Override
 	public String toString() {
-		return "󰡘";
+		return color.toString() + "󰡘" + getScapeChar();
 	}
 }

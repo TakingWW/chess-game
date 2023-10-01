@@ -83,6 +83,6 @@ public class Pawn implements Piece {
 
 	@Override
 	public String toString() {
-		return "󰡙";
+		return color.toString() + "󰡙" + getScapeChar();
 	}
 }

@@ -5,6 +5,10 @@ import com.joao.objects.Player1;
 import com.joao.objects.Player;
 import com.joao.objects.IllegalMoveException;
 import com.joao.objects.PlayerException;
+import com.joao.objects.CommandException;
+
+import java.util.Arrays;
+import java.util.ArrayList;
 
 public class TestBoard {
 	private Board board;
@@ -12,7 +16,7 @@ public class TestBoard {
 
 	private boolean execute() {
 		try {
-			Player player = new Player1("no", 'w');
+			Player player = new Player1('w');
 			board = new Board(player);
 		} catch (PlayerException e) {
 			return false;
@@ -26,67 +30,67 @@ public class TestBoard {
 		execute();
 		try {
 			board.playMove("pe42");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		return success;
 	}
 
 	@Test
-	public boolean pasingFormatTest1() {
-		success = false;
-		execute();
-		try {
-			board.playMove("qee");
-		} catch (IllegalMoveException e) {
-			success = true;
-		}
-		return success;
-	}
-
-	@Test
-	public boolean pasingFormatTest2() {
-		success = false;
-		execute();
-		try {
-			board.playMove("pee");
-		} catch (IllegalMoveException e) {
-			success = true;
-		}
-		return success;
-	}
-
-	@Test
-	public boolean sholdNotAcceptMoveWrongFormat1() {
+	public boolean shouldNotAcceptMoveWrongFormat1() {
 		success = false;
 		execute();
 		try {
 			board.playMove("   ");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		return success;
 	}
 
 	@Test
-	public boolean sholdNotAcceptMoveWrongFormat2() {
+	public boolean shouldNotAcceptMoveWrongFormat2() {
 		success = false;
 		execute();
 		try {
 			board.playMove("123");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		return success;
 	}
 
 	@Test
-	public boolean sholdNotAcceptMoveWrongFormat3() {
+	public boolean shouldNotAcceptMoveWrongFormat3() {
 		success = false;
 		execute();
 		try {
 			board.playMove("e4p");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
+			success = true;
+		}
+		return success;
+	}
+
+	@Test
+	public boolean shouldNotAcceptMoveWrongFormat4() {
+		success = false;
+		execute();
+		try {
+			board.playMove("qee");
+		} catch (IllegalMoveException | CommandException e) {
+			success = true;
+		}
+		return success;
+	}
+
+	@Test
+	public boolean shouldNotAcceptMoveWrongFormat5() {
+		success = false;
+		execute();
+		try {
+			board.playMove("pee");
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		return success;
@@ -96,7 +100,7 @@ public class TestBoard {
 	public boolean testBoardCreate() {
 		success = true;
 		try {
-			Player player = new Player1("no", 'w');
+			Player player = new Player1('w');
 			board = new Board(player);
 		} catch (PlayerException e) {
 			success = false;
@@ -118,7 +122,7 @@ public class TestBoard {
 			board.playMove("nc6");
 			board.playMove("o-o");
 			board.playMove("o-o");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		return success;
@@ -138,7 +142,7 @@ public class TestBoard {
 			board.playMove("nf6");
 			board.playMove("o-o");
 			board.playMove("o-o");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
 		return success;
@@ -161,7 +165,7 @@ public class TestBoard {
 			board.playMove("qd2");
 			board.playMove("o-o-o");
 			board.playMove("o-o-o");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		return success;
@@ -185,7 +189,7 @@ public class TestBoard {
 			board.playMove("qd7");
 			board.playMove("o-o-o");
 			board.playMove("o-o-o");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
 		return success;
@@ -203,7 +207,7 @@ public class TestBoard {
 			board.playMove("pf5");
 			board.playMove("nf3");
 			board.playMove("rh6");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
 		
@@ -221,7 +225,7 @@ public class TestBoard {
 			board.playMove("ra2");
 			board.playMove("pf4");
 			board.playMove("rh6");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		
@@ -242,7 +246,7 @@ public class TestBoard {
 			board.playMove("ba3");
 			board.playMove("ba3");
 			board.playMove("o-o");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
 		
@@ -254,6 +258,7 @@ public class TestBoard {
 		execute();
 		success = true;
 		try {
+			board.testArguments = new ArrayList<>(Arrays.asList("0", "1", "0", "0", "1"));
 			board.playMove("pe4");
 			board.playMove("pc6");
 			board.playMove("pd4");
@@ -276,8 +281,6 @@ public class TestBoard {
 			board.playMove("pc5");
 			board.playMove("re1");
 			board.playMove("be7");
-			System.out.println("getting here");
-			board.draw();
 			board.playMove("pc5");
 			board.playMove("nc5");
 			board.playMove("nc5");
@@ -302,7 +305,7 @@ public class TestBoard {
 			board.playMove("bc5");
 			board.playMove("pg3");
 			board.playMove("bd4");
-			board.playMove("cd4");
+			board.playMove("pd4");
 			board.playMove("qc2");
 			board.playMove("rd2");
 			board.playMove("qc3");
@@ -363,7 +366,7 @@ public class TestBoard {
 			board.playMove("rb7");
 			board.playMove("rc4");
 			board.playMove("ph5");
-			board.playMove("gh5");
+			board.playMove("ph5");
 			board.playMove("rb5");
 			board.playMove("rg4");
 			board.playMove("ke3");
@@ -382,7 +385,8 @@ public class TestBoard {
 			board.playMove("pd4");
 			board.playMove("rh5");
 			board.playMove("kf4");
-		} catch (IllegalMoveException e) {
+		} catch (IllegalMoveException | CommandException e) {
+			e.printStackTrace();
 			success = false;
 		}
 		return success;

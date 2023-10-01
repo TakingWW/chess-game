@@ -7,23 +7,35 @@ import com.joao.objects.PlayerException;
 import com.joao.objects.IllegalMoveException;
 import com.joao.test.Tester;
 import com.joao.test.TestException;
+import com.joao.objects.CommandException;
+
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws PlayerException, TestException {
-//		new Tester();
-		execute();
+		if (args.length > 0) {
+			switch(args[0]) {
+				case "test":
+					new Tester();
+					break;
+				case "run":
+					execute();
+					break;
+				default:
+					System.out.println("No argument valid has been passed, try \'test\' or \'run\'");
+					break;
+			}
+		}
     }
 
 	public static void execute() throws PlayerException {
 		System.out.printf("Let's start the chess game\n");
-		System.out.print("Play with a bot? (Yes/No): ");
 		Player player;
 		try {
-			String otherPlayerFlag = System.console().readLine();
+//			String otherPlayerFlag = System.console().readLine();
 			System.out.print("Choose your pieces color, W to white B to black: ");
 			char color = (char) System.in.read();
-			player = new Player1(otherPlayerFlag, color);
+			player = new Player1(color);
 		} catch (IOException e) {
 			throw new PlayerException("Could not create the player instance");
 		}
@@ -36,7 +48,7 @@ public class Main {
 			String lance = System.console().readLine();
 			try {
 				board.playMove(lance);
-			} catch (IllegalMoveException e) {
+			} catch (IllegalMoveException | CommandException e) {
 				e.printStackTrace();
 			}
 		}		

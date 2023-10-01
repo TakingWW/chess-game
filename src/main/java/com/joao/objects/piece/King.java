@@ -86,7 +86,7 @@ public class King implements Piece {
 
 	@Override
 	public String toString() {
-		return "󰡗";
+		return color.toString() + "󰡗" + getScapeChar();
 	}
 
 	public static Position getInitialPosition(Color pieceColor) {

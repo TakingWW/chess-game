@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 
 import com.joao.objects.piece.Piece;
 import com.joao.objects.piece.Pawn;
@@ -13,6 +14,7 @@ import com.joao.objects.piece.Rook;
 import com.joao.objects.piece.Knight;
 import com.joao.objects.piece.King;
 import com.joao.objects.piece.Queen;
+import com.joao.objects.CommandException;
 
 public class Board {
     private String map;
@@ -23,6 +25,7 @@ public class Board {
     private Map<String, Integer> cols;
     private List<Square> squares = new ArrayList<>(64);
 	private HashMap<Color, HashSet<Position>> attackedPositions = new HashMap<>();
+	public ArrayList<String> testArguments = new ArrayList<>();
 
     public Board(Player player) throws PlayerException {
 		this.player = player;
@@ -76,23 +79,26 @@ public class Board {
 			}
 
 			cols = Map.of("a", 1 , "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
+			updateSquares();
+
 		}
 	}
 
 	public void draw() {
 		map = "";
 		map = map + " |---------------";
-		int line = 0;
+		int decreasingLine = 8;
 		for (int i = 0; i < squares.size(); i++) {
 			if (i % 8 == 0) {
 				map += "|\n";
-				line = (8 - (i - (i % 8)) / 8);
+				int line = (8 - (i - (i % 8)) / 8);
+				decreasingLine--;
 				map = map + line + "|";
 			} else {
 				map += " ";
 			}
 			
-			Piece piece = squares.get(squares.size() - i - 1).getPiece();
+			Piece piece = squares.get(decreasingLine * 8 + (i % 8)).getPiece();
 
 			if (piece == null) {
 				map += " ";
@@ -123,6 +129,9 @@ public class Board {
     }
 
 	private void updateSquares() {
+		attackedPositions.get(Color.WHITE).clear();
+		attackedPositions.get(Color.BLACK).clear();
+
 		for (Square square : squares) {
 			Piece piece = square.getPiece();
 			if (piece == null) continue;
@@ -131,7 +140,13 @@ public class Board {
 		}
 	}
 
-	public void playMove(String move) throws IllegalMoveException {
+	public void playMove(String move) throws IllegalMoveException, CommandException {
+		if (move.charAt(0) == '/') {
+			Command command = Command.create(move.substring(1, move.length()), this);
+			if (command != null) command.execute();
+			return;
+		}
+		
 		boolean shortCastle = move.toLowerCase().equals("o-o");
 		boolean longCastle = move.toLowerCase().equals("o-o-o");
 		boolean castle = shortCastle | longCastle;
@@ -163,8 +178,7 @@ public class Board {
 		}
 
 		String pieceName = move.substring(0, 1);
-		attackedPositions.get(Color.WHITE).clear();
-		attackedPositions.get(Color.BLACK).clear();
+		updateSquares();
 
 		for (int i = 0; i < squares.size(); i++) {
 
@@ -175,10 +189,6 @@ public class Board {
 			if (nextPosition.equals(squarePosition)) squareTo = square;
 			if (squarePosition.equals(kingSquarePositionTo)) kingSquareTo = square;
 			if (squarePiece == null) continue;
-
-			squarePiece.updateMoves(squarePosition, squares);
-			attackedPositions.get(squarePiece.getColor()).addAll(squarePiece.getMoves());
-			
 			if (squarePiece.getColor() != toPlay.getColor()) continue;
 			if (squarePiece.getName().equals("k")) {
 				kingSquareFrom = square;
@@ -202,22 +212,29 @@ public class Board {
 		}
 
 		int size = possibleMoves.size();
-		int number = 0;
+		Optional<Integer> number = Optional.empty();
 
 		if (size == 0 | squareTo == null) throw new IllegalMoveException("Move not found");
 		if (size > 1) {
-			while (number == 0) {
+			if (testArguments.size() > 0) {
+				number = Optional.of(Integer.parseInt(testArguments.get(0)));
+				testArguments.remove(0);
+			}
+			while (!number.isPresent()) {
 				try {
 					System.out.println("More than one move found choose one from " + possibleMoves + " using number between 1 and " + size);
-					number = Integer.parseInt(System.console().readLine()) - 1;
+					Integer in = Integer.parseInt(System.console().readLine());
+					if (in.intValue() > size) throw new NumberFormatException();
+					else number = Optional.of(in - 1);
 				} catch (NumberFormatException e) {
 					System.out.println("This number is not valid");
 				}
 			}
 		}
 
-		Square squareFrom = possibleMoves.get(number);
+		Square squareFrom = possibleMoves.get(number.orElse(0));
 		List<Square> movedSquares = new ArrayList<>(4);
+		if (squareFrom.getPiece().getName().equals("k")) kingSquareTo = squareTo;
 		
 		movePiece(squareFrom, squareTo);
 		movedSquares.add(squareFrom);
@@ -235,6 +252,13 @@ public class Board {
 			}
 			throw new IllegalMoveException("King would be captured this way");
 		}
+		
+//		System.out.println("Move " + squareTo.getPiece() + " " + squareFrom + " -> " + squareTo);
+
 		changeToPlay();
+	}
+
+	public List<Square> getSquares() {
+		return squares;
 	}
 }

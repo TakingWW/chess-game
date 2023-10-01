@@ -52,12 +52,15 @@ public class Square {
 		}
 	}
 
+	public boolean compareCoordinates(String coordinates) {
+		Map<String, Integer> cols = Map.of("a", 1, "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
+		int posX = cols.get(coordinates.substring(0, 1)) - 1;
+		int posY = Integer.parseInt(coordinates.substring(1, 2)) - 1;
+		return (new Position(posX, posY)).equals(position);
+	}
+
     @Override
     public String toString() {
-		Map<Integer, String> cols = Map.of(1 , "a", 2,  "b", 3, "c", 4, "d", 5, "e", 6, "f", 7, "g", 8, "h");
-
-		String col = cols.get(position.x + 1);
-		String row = String.valueOf(position.y + 1);
-		return "" + col + row;
+		return position.toString();
     }
 }

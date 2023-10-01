@@ -7,8 +7,8 @@ public class Player1 implements Player {
     private String name;
     private String flag = "no";
 
-    public Player1(String otherPlayerFlag, char color) {
-		if (!flag.equals(otherPlayerFlag.toLowerCase())) flag = "yes";
+    public Player1(char color) {
+//		if (!flag.equals(otherPlayerFlag.toLowerCase())) flag = "yes";
 
 		try {
 			setColor(color);
