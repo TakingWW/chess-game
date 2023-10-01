@@ -1,13 +1,13 @@
 package com.joao.objects;
 
-public class IlegalMoveException extends Exception {
+public class IllegalMoveException extends Exception {
     private String message = "You made an ilegal move";
 
-    public IlegalMoveException(String message) {
+    public IllegalMoveException(String message) {
 	this.message = message;
     }
 
-    public IlegalMoveException() {}
+    public IllegalMoveException() {}
     
     @Override
     public String getMessage() {

@@ -7,20 +7,11 @@ public class Player1 implements Player {
     private String name;
     private String flag = "no";
 
-    public Player1() {
-		System.out.print("Play with a bot? (Yes/No): ");
-		String otherPlayerFlag = System.console().readLine();
-		if (!flag.equals(otherPlayerFlag.toLowerCase())) {
-			flag = "yes";
-		}
+    public Player1(String otherPlayerFlag, char color) {
+		if (!flag.equals(otherPlayerFlag.toLowerCase())) flag = "yes";
 
 		try {
-			System.out.print("Choose your pieces color, W to white B to black: ");
- 
-			char color = (char) System.in.read();
 			setColor(color);
-		} catch(IOException e) {
-			e.printStackTrace();
 		} catch (PlayerException e) {
 			System.out.println("Default color set to black");
 			this.color = Color.BLACK;

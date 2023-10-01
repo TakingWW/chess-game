@@ -4,12 +4,31 @@ import com.joao.objects.Player1;
 import com.joao.objects.Player;
 import com.joao.objects.Board;
 import com.joao.objects.PlayerException;
-import com.joao.objects.IlegalMoveException;
+import com.joao.objects.IllegalMoveException;
+import com.joao.test.Tester;
+import com.joao.test.TestException;
+import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws PlayerException {
+    public static void main(String[] args) throws PlayerException, TestException {
+//		new Tester();
+		execute();
+    }
+
+	public static void execute() throws PlayerException {
 		System.out.printf("Let's start the chess game\n");
-		Board board = new Board(new Player1());
+		System.out.print("Play with a bot? (Yes/No): ");
+		Player player;
+		try {
+			String otherPlayerFlag = System.console().readLine();
+			System.out.print("Choose your pieces color, W to white B to black: ");
+			char color = (char) System.in.read();
+			player = new Player1(otherPlayerFlag, color);
+		} catch (IOException e) {
+			throw new PlayerException("Could not create the player instance");
+		}
+
+		Board board = new Board(player);
 
 		while (!board.gameOver) {
 			board.draw();
@@ -17,9 +36,9 @@ public class Main {
 			String lance = System.console().readLine();
 			try {
 				board.playMove(lance);
-			} catch (IlegalMoveException e) {
+			} catch (IllegalMoveException e) {
 				e.printStackTrace();
 			}
-		}
-    }
+		}		
+	}
 }

@@ -50,6 +50,11 @@ public class King implements Piece {
 		positions.add(currentPosition.sum(1, -1));
 		positions.add(currentPosition.sum(-1, 1));
 
+		if (moveCount == 0) {
+			positions.add(currentPosition.sum(2, 0));
+			positions.add(currentPosition.sum(-2, 0));
+		}
+
 		for (int i = 0; i < squares.size(); i++) {
 			Square square = squares.get(i);
 			Piece piece = square.getPiece();
@@ -61,7 +66,13 @@ public class King implements Piece {
 			if (piece.getColor() == color) {
 				toRemove.add(squarePosition);
 			}
+			
+			Position abs = Position.abs(squarePosition.minus(currentPosition));
+			for (int k = 1; k < 8; k++) {
+				toRemove.add(squarePosition.sum(Position.multiply(k, abs)));
+			}
 		}
+
 
 		for (Position position : positions) {
 			if (!validPositions.contains(position)) {
@@ -76,5 +87,16 @@ public class King implements Piece {
 	@Override
 	public String toString() {
 		return "󰡗";
+	}
+
+	public static Position getInitialPosition(Color pieceColor) {
+		switch (pieceColor) {
+			case BLACK:
+				return new Position(4, 7);
+			case WHITE:
+				return new Position(4, 0);
+			default:
+				return new Position(0, 0);
+		}
 	}
 }

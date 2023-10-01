@@ -62,10 +62,17 @@ public class Pawn implements Piece {
 				}
 			} else if (piece.getColor() == color) {
 				toRemove.add(squarePosition);
-			} else if (square.getPosition().x == currentPosition.x) {
+			} else if (squarePosition.x == currentPosition.x) {
 				toRemove.add(squarePosition);
 			}
+			if (piece == null) continue;
+
+			Position abs = Position.abs(squarePosition.minus(currentPosition));
+			for (int k = 1; k < 8; k++) {
+				toRemove.add(squarePosition.sum(Position.multiply(k, abs)));
+			}
 		}
+
 		for (Position position : positions) {
 			if (!validPositions.contains(position)) toRemove.add(position);
 		}

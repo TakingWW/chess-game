@@ -12,6 +12,7 @@ public class Square {
     private Color color;
     private Position position;
 	private List<Boolean> underAtack = new ArrayList<>(2);
+	private Piece exPiece = null;
 
     public Square(Piece piece, Color color, Position position) {
 		this.piece = piece;
@@ -32,8 +33,24 @@ public class Square {
     }
 
     public void setPiece(Piece piece) {
+		exPiece = this.piece;
 		this.piece = piece;
     }
+
+	public void deletePiece() {
+		exPiece = piece;
+		piece = null;
+	}
+
+	public void revertPiece() {
+		if (exPiece == null) {
+			exPiece = piece;
+			piece = null;
+		} else {
+			piece = exPiece;
+			exPiece = null;
+		}
+	}
 
     @Override
     public String toString() {

@@ -37,4 +37,14 @@ public enum Color {
 					return "";
 			}
 		}
+	public Color getOposite() {
+			switch(this) {
+				case BLACK:
+					return WHITE;
+				case WHITE:
+					return BLACK;
+				default:
+					return null;
+			}
+		}
 }
