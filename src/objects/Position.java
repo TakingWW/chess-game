@@ -11,6 +11,25 @@ public class Position {
 		this.y = y;
     }
 
+	public Position(String coordinates) {
+		int posX;
+		int posY;
+		String col = coordinates.substring(1, 2);
+		String row = coordinates.substring(2, 3);
+		Map<String, Integer> cols = Map.of("a", 1 , "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
+
+		try {
+			posX = cols.get(col) - 1;
+			posY = Integer.parseInt(row) - 1;
+			if (posY > 7 | posY < 0) throw new NullPointerException();
+		} catch (NumberFormatException | NullPointerException e) {
+			throw new NullPointerException();
+		}
+
+		this.x = posX;
+		this.y = posY;
+	}
+
     public Position sum(int i, int j) {
 		int posX = i + x;
 		int posY = j + y;
