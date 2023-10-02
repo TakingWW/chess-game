@@ -1,7 +1,11 @@
 #!/bin/sh
 
-javac -d target -sourcepath . src/main/java/com/joao/Main.java src/main/java/com/joao/objects/*.java src/main/java/com/joao/net/*.java src/main/java/com/joao/objects/piece/*.java src/main/java/com/joao/test/*.java
+# etags $(find -type f -name "*.java") # to use when you need to achange the TAGS file
+
+src=`find . -name *.java`
+javac -d target -sourcepath . $src
+
 if [ $? == 0 ]
 then
-    java -cp target/ com.joao.Main $1
+    java -cp target/ Main $1
 fi
