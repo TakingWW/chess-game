@@ -25,10 +25,10 @@ public abstract class Command {
 				cmd = new FairFaith(board);
 				break;
 			default:
-				cmd = new Move(command, board.getSquares(), board.getToPlay());
+				cmd = new Move(command, board);
 		}
 		return cmd;
 	}
 
-	public abstract void execute() throws CommandException;
+	public abstract void execute() throws CommandException, IllegalMoveException;
 }

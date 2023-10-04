@@ -14,8 +14,8 @@ public class Position {
 	public Position(String coordinates) {
 		int posX;
 		int posY;
-		String col = coordinates.substring(1, 2);
-		String row = coordinates.substring(2, 3);
+		String col = coordinates.substring(0, 1);
+		String row = coordinates.substring(1, 2);
 		Map<String, Integer> cols = Map.of("a", 1 , "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
 
 		try {

@@ -271,7 +271,7 @@ public class TestBoard {
 		execute();
 		success = true;
 		try {
-			board.testArguments = new ArrayList<>(Arrays.asList("0", "1", "0", "0", "1"));
+			board.testArguments = new ArrayList<>(Arrays.asList(0, 1, 0, 0, 1));
 			board.playMove("pe4");
 			board.playMove("pc6");
 			board.playMove("pd4");

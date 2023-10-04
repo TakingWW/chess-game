@@ -3,6 +3,7 @@ package objects;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Collections;
 
 import objects.piece.King;
 import objects.piece.Piece;
@@ -11,21 +12,29 @@ import objects.command.Command;
 import static objects.Util.*;
 
 public class Move extends Command {
-	class Pair {
-		public Optional<Square> squareTo;
-		public Optional<Square> squareFrom;
+	static class Pair {
+		public Square squareTo;
+		public Square squareFrom;
 
-		public Pair() {
-			squareTo = Optional.empty();
-			squareFrom = Optional.empty();
+		public boolean pairComplete() {
+			if (squareFrom == null | squareTo == null) {
+				return false;
+			} else {
+				return true;
+			}
 		}
 	}
 	
-	public List<Pair> moves = new ArrayList<>();
+	public final List<Pair> moves = new ArrayList<>();
+	private final Board board;
 	public boolean castle = false;
 
-	public Move(String moveString, List<Square> squares, Player player) throws IllegalMoveException {
+	public Move(String moveString, Board board) throws IllegalMoveException {
 		moves.add(new Pair());
+
+		this.board = board;
+		List<Square> squares = board.getSquares();
+		Player player = board.getToPlay();
 		
 		if (moveString.equals("o-o") | moveString.equals("o-o-o")) rock(moveString, squares, player);
 		else commun(moveString, squares, player);
@@ -43,33 +52,39 @@ public class Move extends Command {
 			throw new IllegalMoveException("Square not found");
 		}
 		
-		for (int i = 0; i < squares.size(); i++) {
-			Square square = squares.get(i);
+		for (Square square : squares) {
 			Piece piece = square.getPiece();
 
 			if (square.getPosition().equals(nextPosition)) squareTo = square;
 			
 			if (piece == null) continue;
 			if (piece.getColor() != player.getColor()) continue;
+			if (!piece.getName().equals(moveString.substring(0, 1))) continue;
 			if (!piece.getMoves().contains(nextPosition)) continue;
 
-			moves.get(moves.size() - 1).squareFrom = Optional.of(square);
+			moves.get(moves.size() - 1).squareFrom = square;
 			moves.add(new Pair());
 		}
 
 		moves.remove(moves.size() - 1);
 		
-		if (moves.size() > 1){
-			String squareMessage = "";
-		
-			for (int i = 0; i < moves.size(); i++) {
-				moves.get(i).squareTo = Optional.of(squareTo);
-				squareMessage += moves.get(i).squareFrom.get().toString() + " ";
-			}
+		String squareMessage = "";
+		for (Pair pair : moves) {
+			pair.squareTo = squareTo;
 			
+			if (!pair.pairComplete()) {
+				pair = null;
+				continue;
+			} else {
+				squareMessage += pair.squareFrom.toString() + " ";
+			}
+		}
+
+		moves.removeAll(Collections.singleton(null));
+
+		if (moves.size() > 1){
 			int number = chooseSquareFromList(squareMessage);
 			Pair move = moves.get(number);
-			
 			moves.clear();
 			moves.add(move);
 		}
@@ -94,40 +109,52 @@ public class Move extends Command {
 			Square square = squares.get(i);
 			Piece piece = square.getPiece();
 			
-			if (square.getPosition().equals(nextPosition)) moves.get(ROOK_INDEX).squareTo = Optional.of(square);
-			if (square.getPosition().equals(nextKingPosition)) moves.get(KING_INDEX).squareTo = Optional.of(square);
+			if (square.getPosition().equals(nextPosition)) moves.get(ROOK_INDEX).squareTo = square;
+			if (square.getPosition().equals(nextKingPosition)) moves.get(KING_INDEX).squareTo = square;
 			
 			if (piece == null) continue;
 			if (piece.getColor() != player.getColor()) continue;
-			if (piece.getName().equals("k")) moves.get(KING_INDEX).squareFrom = Optional.of(square);
+			if (piece.getName().equals("k") &
+				piece.getMoves().contains(nextKingPosition) &
+				!board.getAttackingSquares(player.getColor().
+					getOposite()).contains(nextPosition)) moves.get(KING_INDEX).squareFrom = square;
 			if (!piece.getName().equals("r")) continue;
 			if (!piece.getMoves().contains(nextPosition)) continue;
 			if (piece.getMovements(0) != 0) continue;
-
-			moves.get(ROOK_INDEX).squareFrom = Optional.of(square);
+			
+			moves.get(ROOK_INDEX).squareFrom = square;
 		}
 
-		if (!moves.get(KING_INDEX).squareFrom.get().getPiece().getMoves().contains(nextKingPosition)) {
-			moves.get(KING_INDEX).squareTo = Optional.empty();
-			moves.get(ROOK_INDEX).squareTo = Optional.empty();
+		for (Pair pair : moves) {
+			if (!pair.pairComplete()) {
+				moves.clear();
+				break;
+			}
 		}
 	}
 	
-	public void execute() {
+	public void execute() throws IllegalMoveException {
 		for (Pair pair : moves) {
-			if (pair.squareFrom.isPresent() & pair.squareTo.isPresent()) {
-				Square squareFrom = pair.squareFrom.get();
-				Square squareTo = pair.squareTo.get();
+			Square squareFrom = pair.squareFrom;
+			Square squareTo = pair.squareTo;
 			
-				squareFrom.getPiece().getMovements(1);
-				squareTo.setPiece(squareFrom.getPiece());
-				squareFrom.deletePiece();
-			}
+			squareFrom.getPiece().getMovements(1);
+			squareTo.setPiece(squareFrom.getPiece());
+			squareFrom.deletePiece();
+		}
+		if (moves.isEmpty()) throw new IllegalMoveException("No move found");
+		if (moves.size() > 0) {
+			board.updateSquares();
+			board.changeToPlay();
 		}
 	}
 
 	public int chooseSquareFromList(String squaresMessage) {
 		Optional<Integer> number = Optional.empty();
+		if (!board.testArguments.isEmpty()) {
+			number = Optional.of(board.testArguments.get(0));
+			board.testArguments.remove(0);
+		}
 		
 		while (!number.isPresent()) {
 			print("More than one move found choose one from " + squaresMessage + "using number between 1 and " + moves.size());
