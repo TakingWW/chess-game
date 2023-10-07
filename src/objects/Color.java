@@ -36,9 +36,9 @@ public enum Color {
 	public String print() {
 			switch(this) {
 				case BLACK:
-					return "black";
+					return "b";
 				case WHITE:
-					return "white";
+					return "w";
 				default:
 					return "";
 			}
@@ -53,7 +53,7 @@ public enum Color {
 					return null;
 			}
 		}
-	
+
 	public String getScapeChar() {
  			return "\u001B[0m";
 		}

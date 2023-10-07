@@ -52,9 +52,9 @@ public class Pawn implements Piece {
 			Square square = squares.get(i);
 			Piece piece = square.getPiece();
 			Position squarePosition = square.getPosition();
-			
+
 			validPositions.add(squarePosition);
-			
+
 			if (piece == null) {
 				if (squarePosition.x + 1 == currentPosition.x |
 					squarePosition.x - 1 == currentPosition.x) {
@@ -65,6 +65,7 @@ public class Pawn implements Piece {
 			} else if (squarePosition.x == currentPosition.x) {
 				toRemove.add(squarePosition);
 			}
+
 			if (piece == null) continue;
 
 			Position abs = Position.abs(squarePosition.minus(currentPosition));
@@ -76,7 +77,7 @@ public class Pawn implements Piece {
 		for (Position position : positions) {
 			if (!validPositions.contains(position)) toRemove.add(position);
 		}
-		
+
 		positions.removeAll(toRemove);
 		moves = positions;
     }

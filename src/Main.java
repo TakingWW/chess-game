@@ -1,12 +1,13 @@
+import static objects.Util.*;
 import objects.player.Player1;
 import objects.player.Player;
 import objects.Board;
 import objects.player.PlayerException;
 import objects.IllegalMoveException;
+import net.SocketClient;
 import test.Tester;
 import test.TestException;
 import objects.command.CommandException;
-import static objects.Util.*;
 
 import java.io.IOException;
 
@@ -21,6 +22,10 @@ public class Main {
 				case "run":
 					execute();
 					break;
+				case "net":
+					SocketClient client = new SocketClient();
+					client.run();
+					break;
 				default:
 					print("No argument valid has been passed, try \'test\' or \'run\'");
 					break;
@@ -32,13 +37,9 @@ public class Main {
 		printf("Let's start the chess game\n");
 		Player player;
 
-		try {
-			printf("Choose your pieces color, W to white B to black: ");
-			char color = (char) System.in.read();
-			player = new Player1(color);
-		} catch (IOException e) {
-			throw new PlayerException("Could not create the player instance");
-		}
+		printf("Choose your pieces color, W to white, B to black: ");
+		String color = System.console().readLine();
+		player = new Player1(color);
 
 		Board board = new Board(player);
 
@@ -52,7 +53,7 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		
+
 		if (winner != null) print(winner.getColor().print() + " pieces won");
 		else print("We don't have a winner");
 	}

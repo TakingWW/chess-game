@@ -4,53 +4,145 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import objects.player.Player;
+import objects.player.Player1;
 import static objects.Util.*;
 
-public class SocketServer extends Thread {
-    private ServerSocket serverSocket;
-    private int port = 8080;
-    private boolean running = false;
+public class SocketServer implements Runnable {
+	private ArrayList<ConnectionHandler> connections;
+	private ServerSocket server;
+	private boolean done = false;;
+	private static int numberOfConnections = 0;
 
-    public SocketServer() {
-	print("INFO: Start server on port: " + port);
-	startServer();
+	private ExecutorService pool;
 
-	try {
-	    Thread.sleep(60000);
-	} catch (Exception e) {
-	    e.printStackTrace();
+	public SocketServer() {
+		this.connections = new ArrayList<>();
 	}
-	stopServer();
-    }
 
-    public void startServer() {
-	try {
-	    serverSocket = new ServerSocket(port);
-	    this.start();
-	} catch (IOException e) {
-	    e.printStackTrace();
+	@Override
+	public void run() {
+		try {
+			server = new ServerSocket(8080);
+			pool = Executors.newCachedThreadPool();
+			System.out.println("Server initialized");
+			while (!done) {
+				if (connections.size() < 2) {
+					Socket client = server.accept();
+					ConnectionHandler handler = new ConnectionHandler(client, numberOfConnections++);
+					connections.add(handler);
+					pool.execute(handler);
+				}
+			}
+		} catch (Exception e) {
+			shutdown();
+		}
 	}
-    }
 
-    public void stopServer() {
-	running = false;
-	this.interrupt();
-    }
-
-    @Override
-    public void run() {
-	running = true;
-	while(running) {
-	    try {
-		print("INFO: Listennig for a connection");
-		Socket socket = serverSocket.accept();
-		RequestHandler requestHandler = new RequestHandler(socket);
-		requestHandler.start();
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
+	public void broadcast(String message) {
+		for (ConnectionHandler connection : connections) {
+			if (connection != null) {
+				connection.sendMessage(message);
+			}
+		}
 	}
-    }
+
+	public void shutdown() {
+		try {
+			done = true;
+			if (!server.isClosed()) {
+				server.close();
+			}
+
+			for (ConnectionHandler connection : connections) {
+				connection.shutdown();
+			}
+		} catch (IOException ignore) {}
+	}
+
+	class ConnectionHandler implements Runnable {
+		private Socket client;
+		private BufferedReader in;
+		private PrintWriter out;
+		private Player player;
+		private int id;
+
+		public ConnectionHandler(Socket client, int id) {
+			this.client = client;
+			this.id = id;
+		}
+
+		@Override
+		public void run() {
+			try {
+				out = new PrintWriter(client.getOutputStream(), true);
+				in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+				if (id == 0) {
+					out.println("Please enter a color: ");
+					String color = in.readLine();
+					this.player = new Player1(color);
+				} else {
+					while (connections.get(0).getPlayer() == null) {
+						Thread.sleep(2);
+					}
+					this.player = new Player1(connections.get(0).getPlayer().getColor().print());
+				}
+
+				broadcast("me joined the chat");
+				String message;
+				while ((message = in.readLine()) != null) {
+			// 		if (message.startsWith("/nick ")) {
+			// 			String[] messageSplit = message.split(" ", 2);
+			// 			if (messageSplit.length == 2) {
+			// 				broadcast(color + " renamed himselfe to " + messageSplit[1]);
+			// 				System.out.println(color + " renamed themselves to " + messageSplit[1]);
+			// 				color = messageSplit[1];
+			// 				out.println("Successfully changeg nicname to " + color);
+			// 			} else {
+			// 				out.println("No valid nickname was provided");
+			// 			}
+			// 		} else if (message.startsWith("/quit")) {
+			// 			broadcast(color + " left the chat");
+			// 			shutdown();
+			// 		} else {
+			// 			broadcast(color + " : " + message);
+			// 		}
+			 	}
+			} catch (Exception e) {
+				shutdown();
+			}
+		}
+
+		public Player getPlayer() {
+			return player;
+		}
+
+		public void sendMessage(String message) {
+			out.println(message);
+		}
+
+
+		public void shutdown() {
+			try {
+				in.close();
+				out.close();
+				if (!client.isClosed()) {
+					client.close();
+				}
+			} catch (IOException ignore) {
+
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		SocketServer server = new SocketServer();
+		server.run();
+	}
 }

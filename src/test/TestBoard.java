@@ -17,7 +17,7 @@ public class TestBoard {
 
 	private boolean execute() {
 		try {
-			Player player = new Player1('w');
+			Player player = new Player1("w");
 			board = new Board(player);
 		} catch (PlayerException e) {
 			return false;
@@ -113,7 +113,7 @@ public class TestBoard {
 	public boolean testBoardCreate() {
 		success = true;
 		try {
-			Player player = new Player1('w');
+			Player player = new Player1("w");
 			board = new Board(player);
 		} catch (PlayerException e) {
 			success = false;
@@ -145,7 +145,7 @@ public class TestBoard {
 	public boolean testShortRockSequence() {
 		execute();
 		success = true;
-		
+
 		try {
 			board.playMove("pe4");
 			board.playMove("pe5");
@@ -223,7 +223,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
-		
+
 		return success;
 	}
 
@@ -241,7 +241,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
-		
+
 		return success;
 	}
 
@@ -262,7 +262,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
-		
+
 		return success;
 	}
 
@@ -417,7 +417,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
-		
+
 		return success;
 	}
 
@@ -431,7 +431,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
-		
+
 		return success;
 	}
 
@@ -445,7 +445,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
-		
+
 		return success;
 	}
 
@@ -459,7 +459,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
-		
+
 		return success;
 	}
 
@@ -473,7 +473,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
-		
+
 		return success;
 	}
 
@@ -488,7 +488,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
-		
+
 		return success;
 	}
 
@@ -505,7 +505,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
-		
+
 		return success;
 	}
 }

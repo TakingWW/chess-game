@@ -9,16 +9,18 @@ public class Player1 implements Player {
     private Color color;
     private String name;
 
-    public Player1(char color) {
-		try {
-			setColor(color);
-		} catch (PlayerException e) {
-			print("Default color set to black");
-			this.color = Color.BLACK;
+    public Player1(String color) {
+		switch (color) {
+			case "w":
+				this.color = Color.WHITE;
+			case "b":
+				this.color = Color.BLACK;
+			default:
+				this.color = Color.BLACK;
 		}
-    }
+	}
 
-    public void setName(String name) throws PlayerException {
+	public void setName(String name) throws PlayerException {
 		if (name.contains(" ")) {
 			throw new PlayerException("Names with spaces are not acepted");
 		}
@@ -27,16 +29,6 @@ public class Player1 implements Player {
 
     public Color getColor() {
 		return color;
-    }
-
-    public void setColor(char color) throws PlayerException {
-		if (color == 'w' | color == 'W') {
-			this.color = Color.WHITE;
-		} else if (color == 'b' | color == 'B') {
-			this.color = Color.BLACK;
-		} else {
-			throw new PlayerException("Color not found");
-		}
     }
 
     public String getName() {

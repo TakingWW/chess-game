@@ -26,18 +26,11 @@ public class Board {
     private Player bot = new Bot();
     private List<Square> squares = new ArrayList<>(64);
 	private HashMap<Color, HashSet<Position>> attackedPositions = new HashMap<>();
+
 	public ArrayList<Integer> testArguments = new ArrayList<>();
 
     public Board(Player player) throws PlayerException {
 		this.player = player;
-		if (player.getColor() == Color.BLACK) {
-			bot.setColor(Color.WHITE.print().charAt(0));
-			toPlay = bot;
-		} else {
-			bot.setColor(Color.BLACK.print().charAt(0));
-			toPlay = player;
-		}
-
 		for (int j = 0; j < 8; j++) {
 			for (int i = 0; i < 8; i++) {
 				Square square;
@@ -52,7 +45,7 @@ public class Board {
 					piece = new Knight(Color.BLACK);
 				} else if (j == 7 && i == 3) {
 					piece = new Queen(Color.BLACK);
-				} else if (j == 7 && i == 4) {
+				} else if (j == 7) {
 					piece = new King(Color.BLACK);
 				}
 				if (j == 1) {
@@ -65,22 +58,22 @@ public class Board {
 					piece = new Knight(Color.WHITE);
 				} else if (j == 0 && i == 3) {
 					piece = new Queen(Color.WHITE);
-				} else if (j == 0 && i == 4) {
+				} else if (j == 0) {
 					piece = new King(Color.WHITE);
 				}
-		
+
 				if ((i + j) % 2 == 0) {
 					square = new Square(piece, Color.BLACK, new Position(i, j));
 				} else {
 					square = new Square(piece, Color.WHITE, new Position(i, j));
 				}
+
 				attackedPositions.put(Color.BLACK, new HashSet<Position>());
 				attackedPositions.put(Color.WHITE, new HashSet<Position>());
 				squares.add(square);
 			}
 
 			updateSquares();
-
 		}
 	}
 
@@ -88,25 +81,21 @@ public class Board {
 		String map;
 		map = " |---------------";
 		int decreasingLine = 8;
+
 		for (int i = 0; i < squares.size(); i++) {
 			if (i % 8 == 0) {
 				map += "|\n";
 				int line = (8 - (i - (i % 8)) / 8);
 				decreasingLine--;
 				map = map + line + "|";
-			} else {
-				map += " ";
-			}
-			
+			} else map += " ";
+
 			Piece piece = squares.get(decreasingLine * 8 + (i % 8)).getPiece();
 
-			if (piece == null) {
-				map += " ";
-			} else {
-				map += piece.getColor() + piece.toString() + piece.getScapeChar();
-			}
+			if (piece == null) map += " ";
+			else map += piece.getColor() + piece.toString() + piece.getScapeChar();
 		}
-	
+
 		map = map + "|\n |---------------|";
 		map = map + "\n  a b c d e f g h \n";
 
@@ -121,6 +110,7 @@ public class Board {
 	public Player getToPlay() {
 		return toPlay;
     }
+
 	public Player getNotToPlay() {
 		if (toPlay.equals(player)) return bot;
 		else return player;
@@ -141,13 +131,32 @@ public class Board {
 		for (Square square : squares) {
 			Piece piece = square.getPiece();
 			if (piece == null) continue;
+
 			piece.updateMoves(square.getPosition(), squares);
 			attackedPositions.get(piece.getColor()).addAll(piece.getMoves());
 		}
 	}
 
+	private boolean checkIfKingIsPresent() {
+		Square kingSquare = null;
+		for (Square square : squares) {
+			Piece piece = square.getPiece();
+
+			if (piece == null) continue;
+			if (piece.getColor() != toPlay.getColor().getOposite()) continue;
+			if (piece.getName().equals("k")) kingSquare = square;
+		}
+
+		return kingSquare == null;
+	}
+
 	public void playMove(String moveString) throws IllegalMoveException, CommandException {
-			Command command = Command.create(moveString, this);
-			command.execute();
+		Command command = Command.create(moveString, this);
+		command.execute();
+
+		if (checkIfKingIsPresent()) {
+			gameOver = true;
+			winner = toPlay;
+		}
 	}
  }
