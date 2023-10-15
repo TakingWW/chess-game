@@ -1,7 +1,13 @@
 * Chees Game
 This is just a chess game made in java, for fun
+
 * Usage
+You can use the command line to run the game. This can be made easily as follows
+
 #+BEGIN_SRC shell
-  ARG="run" # or ARG="test" if you wanna run the unit tests
-  ./build.sh $ARG
+  # Build and run the application (start the game)
+  ./build.sh run
+
+  # Build and test the application
+  ./build.sh test
 #+END_SRC
