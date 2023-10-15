@@ -21,6 +21,7 @@ public class Main {
 				case "test":
 					test = true;
 					new Tester();
+
 					break;
 				case "run":
 					execute();
@@ -28,6 +29,7 @@ public class Main {
 				case "net":
 					SocketClient client = new SocketClient();
 					client.run();
+
 					break;
 				default:
 					print("No argument valid has been passed, try \'./build.sh test\' or \'./build.sh run\'");
@@ -40,19 +42,19 @@ public class Main {
     }
 
 	public static void execute() throws PlayerException {
-		print("Let's start the chess game");
-		Player player;
+		printf("Let's start the chess game\nChoose your pieces color, W to white, B to black: ");
 
-		printf("Choose your pieces color, W to white, B to black: ");
 		String color = System.console().readLine();
-		player = new Player1(color);
 
+		Player player = new Player1(color);
 		Board board = new Board(player);
 
 		while (!gameOver) {
 			board.draw();
 			printf(board.getToPlay().getColor().print() + " to play: ");
+
 			String lance = System.console().readLine();
+
 			try {
 				board.playMove(lance);
 			} catch (IllegalMoveException | CommandException e) {

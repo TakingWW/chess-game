@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public interface Piece {
-
     public HashSet<Position> getMoves();
     public Color getColor();
     public int getMovements(int i);

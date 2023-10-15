@@ -56,6 +56,7 @@ public class Square {
 		Map<String, Integer> cols = Map.of("a", 1, "b", 2, "c", 3, "d", 4, "e", 5, "f", 6, "g", 7, "h", 8);
 		int posX = cols.get(coordinates.substring(0, 1)) - 1;
 		int posY = Integer.parseInt(coordinates.substring(1, 2)) - 1;
+
 		return (new Position(posX, posY)).equals(position);
 	}
 

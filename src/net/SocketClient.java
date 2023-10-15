@@ -37,6 +37,7 @@ public class SocketClient implements Runnable{
 
 	public void shutdown() {
 		done = true;
+
 		try {
 			in.close();
 			out.close();
@@ -51,8 +52,10 @@ public class SocketClient implements Runnable{
 		public void run() {
 			try {
 				BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
+
 				while (!done) {
 					String message = inReader.readLine();
+
 					if (message.equals("/quit")) {
 						inReader.close();
 						shutdown();

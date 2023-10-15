@@ -10,30 +10,31 @@ public class RequestHandler extends Thread {
     private Socket socket;
 
     public RequestHandler(Socket socket) {
-	this.socket = socket;
+		this.socket = socket;
     }
 
     @Override
     public void run() {
-	try {
-	    print("INFO: Received a connection");
+		try {
+			print("INFO: Received a connection");
 
-	    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	    PrintWriter out = new PrintWriter(socket.getOutputStream());
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintWriter out = new PrintWriter(socket.getOutputStream());
 
-	    out.println("Echo: Server 1.0");
-	    out.flush();
+			out.println("Echo: Server 1.0");
+			out.flush();
 
-	    String line = in.readLine();
-	    out.println("cagando na sua cabeça");
-	    in.close();
-	    out.close();
-	    socket.close();
+			String line = in.readLine();
 
-	    print("INFO: Connection closed");
-	    
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+			out.println("cagando na sua cabeça");
+			in.close();
+			out.close();
+			socket.close();
+
+			print("INFO: Connection closed");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 }

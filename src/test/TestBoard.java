@@ -23,6 +23,7 @@ public class TestBoard {
 		} catch (PlayerException e) {
 			return false;
 		}
+
 		return true;
 	}
 
@@ -35,6 +36,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -47,6 +49,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -54,11 +57,13 @@ public class TestBoard {
 	public boolean testShouldNotAcceptMoveWrongFormat1() {
 		success = false;
 		execute();
+
 		try {
 			board.playMove("   ");
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -66,11 +71,13 @@ public class TestBoard {
 	public boolean testShouldNotAcceptMoveWrongFormat2() {
 		success = false;
 		execute();
+
 		try {
 			board.playMove("123");
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -78,11 +85,13 @@ public class TestBoard {
 	public boolean testShouldNotAcceptMoveWrongFormat3() {
 		success = false;
 		execute();
+
 		try {
 			board.playMove("e4p");
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -90,11 +99,13 @@ public class TestBoard {
 	public boolean testShouldNotAcceptMoveWrongFormat4() {
 		success = false;
 		execute();
+
 		try {
 			board.playMove("qee");
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -102,11 +113,13 @@ public class TestBoard {
 	public boolean testShouldNotAcceptMoveWrongFormat5() {
 		success = false;
 		execute();
+
 		try {
 			board.playMove("pee");
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -139,6 +152,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -159,6 +173,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
+
 		return success;
 	}
 
@@ -182,6 +197,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = true;
 		}
+
 		return success;
 	}
 
@@ -206,6 +222,7 @@ public class TestBoard {
 		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}
+
 		return success;
 	}
 
@@ -269,8 +286,9 @@ public class TestBoard {
 
 	@Test
 	public boolean testRealGame1() {
-		execute();
 		success = true;
+		execute();
+
 		try {
 			board.testArguments = new ArrayList<>(Arrays.asList(0, 1, 0, 0, 1));
 			board.playMove("pe4");
@@ -404,6 +422,7 @@ public class TestBoard {
 			e.printStackTrace();
 			success = false;
 		}
+
 		return success;
 	}
 
@@ -495,8 +514,9 @@ public class TestBoard {
 
 	@Test
 	public boolean testFairFaithCommandShouldThrowException() {
-		execute();
 		success = true;
+		execute();
+
 		try {
 			board.playMove("pe4");
 			board.playMove("pe5");

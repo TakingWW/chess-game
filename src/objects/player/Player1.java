@@ -24,6 +24,7 @@ public class Player1 implements Player {
 		if (name.contains(" ")) {
 			throw new PlayerException("Names with spaces are not acepted");
 		}
+
 		this.name = name;
     }
 
@@ -38,6 +39,7 @@ public class Player1 implements Player {
     @Override
     public boolean equals(Object o) {
 		Player other = (Player) o;
+
 		return other.getColor() == color;
     }
 

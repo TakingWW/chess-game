@@ -15,27 +15,29 @@ public class King implements Piece {
 	public King(Color color) {
 		this.color = color;
 	}
-	
+
 	public HashSet<Position> getMoves() {
 		return moves;
 	}
-	
+
     public Color getColor() {
 		return color;
 	}
-	
+
     public int getMovements(int i) {
 		if (i > 0) {
 			moveCount += i;
+
 			return 0;
 		}
+
 		return moveCount;
 	}
-	
+
     public String getName() {
 		return "k";
 	}
-	
+
     public void updateMoves(Position currentPosition, List<Square> squares) {
 		HashSet<Position> positions = new HashSet<>();
 		HashSet<Position> toRemove = new HashSet<>();
@@ -61,12 +63,12 @@ public class King implements Piece {
 			Position squarePosition = square.getPosition();
 
 			validPositions.add(squarePosition);
-			
+
 			if (piece == null) continue;
 			if (piece.getColor() == color) {
 				toRemove.add(squarePosition);
 			}
-			
+
 			Position abs = Position.abs(squarePosition.minus(currentPosition));
 			for (int k = 1; k < 8; k++) {
 				toRemove.add(squarePosition.sum(Position.multiply(k, abs)));

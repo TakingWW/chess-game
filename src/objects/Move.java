@@ -12,6 +12,9 @@ import objects.command.Command;
 import static objects.Util.*;
 
 public class Move extends Command {
+	public final List<Pair> moves = new ArrayList<>();
+	private final Board board;
+
 	static class Pair {
 		public Square squareTo;
 		public Square squareFrom;
@@ -25,16 +28,12 @@ public class Move extends Command {
 		}
 	}
 
-	public final List<Pair> moves = new ArrayList<>();
-	private final Board board;
-	public boolean castle = false;
-
 	public Move(String moveString, Board board) throws IllegalMoveException {
+		this.board = board;
 		moves.add(new Pair());
 
-		this.board = board;
-		List<Square> squares = board.getSquares();
 		Player player = board.getToPlay();
+		List<Square> squares = board.getSquares();
 
 		if (moveString.equals("o-o") | moveString.equals("o-o-o")) rock(moveString, squares, player);
 		else commun(moveString, squares, player);
@@ -93,13 +92,14 @@ public class Move extends Command {
 	private void rock(String moveString, List<Square> squares, Player player) throws IllegalMoveException {
 		boolean shortCastle = moveString.equals("o-o");
 		boolean longCastle = moveString.equals("o-o-o");
+		boolean castle = shortCastle | longCastle;
 		int castleIndentifier = shortCastle ? 1 : -1;
 
-		castle = shortCastle | longCastle;
 		if (!castle) throw new IllegalMoveException("Move not valid");
 
 		int KING_INDEX = 0;
 		int ROOK_INDEX = 1;
+
 		Position nextPosition = King.getInitialPosition(player.getColor()).sum(castleIndentifier, 0);
 		Position nextKingPosition = nextPosition.sum(castleIndentifier, 0);
 
@@ -135,6 +135,7 @@ public class Move extends Command {
 
 	public void execute() throws IllegalMoveException {
 		if (moves.isEmpty()) throw new IllegalMoveException("No move found");
+
 		for (Pair pair : moves) {
 			Square squareFrom = pair.squareFrom;
 			Square squareTo = pair.squareTo;
@@ -152,6 +153,7 @@ public class Move extends Command {
 
 	public int chooseSquareFromList(String squaresMessage) {
 		Optional<Integer> number = Optional.empty();
+
 		if (!board.testArguments.isEmpty()) {
 			number = Optional.of(board.testArguments.get(0));
 			board.testArguments.remove(0);
@@ -160,8 +162,10 @@ public class Move extends Command {
 		while (!number.isPresent()) {
 			print("More than one move found choose one from " + squaresMessage + "using number between 1 and " + moves.size());
 			Integer in = Integer.parseInt(System.console().readLine());
+
 			if (in > moves.size()) continue;
 			else if (in < 0) continue;
+
 			number = Optional.of(Integer.valueOf(in - 1));
 		}
 

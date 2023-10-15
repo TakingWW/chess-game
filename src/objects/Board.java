@@ -40,6 +40,7 @@ public class Board {
 			for (int i = 0; i < 8; i++) {
 				Square square;
 				Piece piece = null;
+
 				if (j == 6) {
 					piece = new Pawn(Color.BLACK);
 				} else if ((j == 7 && i == 2) | (j == 7 && i == 5)) {
@@ -53,6 +54,7 @@ public class Board {
 				} else if (j == 7) {
 					piece = new King(Color.BLACK);
 				}
+
 				if (j == 1) {
 					piece = new Pawn(Color.WHITE);
 				} else if ((j == 0 && i == 2) | (j == 0 && i == 5)) {
@@ -144,6 +146,7 @@ public class Board {
 
 	private boolean checkIfKingIsPresent() {
 		Square kingSquare = null;
+
 		for (Square square : squares) {
 			Piece piece = square.getPiece();
 

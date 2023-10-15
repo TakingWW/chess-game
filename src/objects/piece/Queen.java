@@ -15,27 +15,29 @@ public class Queen implements Piece {
 	public Queen(Color color) {
 		this.color = color;
 	}
-	
+
 	public HashSet<Position> getMoves() {
 		return moves;
 	}
-	
+
     public Color getColor() {
 		return color;
 	}
-	
+
     public int getMovements(int i) {
 		if (i > 0) {
 			moveCount += i;
+
 			return 0;
 		}
+
 		return moveCount;
 	}
-	
+
     public String getName() {
 		return "q";
 	}
-	
+
     public void updateMoves(Position currentPosition, List<Square> squares) {
 		HashSet<Position> positions = new HashSet<>();
 		HashSet<Position> toRemove = new HashSet<>();
@@ -59,7 +61,7 @@ public class Queen implements Piece {
 			Position squarePosition = square.getPosition();
 
 			validPositions.add(squarePosition);
-			
+
 			if (piece == null) continue;
 			if (piece.getColor() == color) {
 				toRemove.add(squarePosition);

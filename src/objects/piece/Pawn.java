@@ -31,8 +31,10 @@ public class Pawn implements Piece {
 	public int getMovements(int i) {
 		if (i > 0) {
 			moveCount += i;
+
 			return 0;
 		}
+
 		return moveCount;
 	}
 
@@ -44,6 +46,7 @@ public class Pawn implements Piece {
 		positions.add(currentPosition.sum(0, color.getUnit()));
 		positions.add(currentPosition.sum(1, color.getUnit()));
 		positions.add(currentPosition.sum(-1, color.getUnit()));
+
 		if (moveCount == 0) {
 			positions.add(currentPosition.sum(0, 2 * color.getUnit()));
 		}
@@ -69,6 +72,7 @@ public class Pawn implements Piece {
 			if (piece == null) continue;
 
 			Position abs = Position.abs(squarePosition.minus(currentPosition));
+
 			for (int k = 1; k < 8; k++) {
 				toRemove.add(squarePosition.sum(Position.multiply(k, abs)));
 			}

@@ -24,8 +24,10 @@ public class Rook implements Piece {
     public int getMovements(int i) {
 		if (i > 0) {
 			moveCount += i;
+
 			return 0;
 		}
+
 		return moveCount;
 	}
     public String getName() {

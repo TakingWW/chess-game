@@ -27,6 +27,7 @@ public class Tester {
 					} else {
 						log("Succeed", Color.GREEN, method.getName());
 					}
+
 				} catch (IllegalAccessException e) {
 					log("Fail", Color.RED, "Could not access the method " + method.getName());
 				} catch (InvocationTargetException e) {
@@ -34,7 +35,7 @@ public class Tester {
 				}
 			}
 		}
-		
+
 		if (failedCount > 0) throw new TestException("" + failedCount + " test methods failed");
 	}
 }

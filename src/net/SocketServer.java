@@ -31,11 +31,14 @@ public class SocketServer implements Runnable {
 		try {
 			server = new ServerSocket(8080);
 			pool = Executors.newCachedThreadPool();
+
 			System.out.println("Server initialized");
+
 			while (!done) {
 				if (connections.size() < 2) {
 					Socket client = server.accept();
 					ConnectionHandler handler = new ConnectionHandler(client, numberOfConnections++);
+
 					connections.add(handler);
 					pool.execute(handler);
 				}
@@ -63,6 +66,7 @@ public class SocketServer implements Runnable {
 			for (ConnectionHandler connection : connections) {
 				connection.shutdown();
 			}
+
 		} catch (IOException ignore) {}
 	}
 
@@ -87,33 +91,17 @@ public class SocketServer implements Runnable {
 					out.println("Please enter a color: ");
 					String color = in.readLine();
 					this.player = new Player1(color);
+
 				} else {
 					while (connections.get(0).getPlayer() == null) {
 						Thread.sleep(2);
 					}
+
 					this.player = new Player1(connections.get(0).getPlayer().getColor().print());
 				}
 
 				broadcast("me joined the chat");
-				String message;
-				while ((message = in.readLine()) != null) {
-			// 		if (message.startsWith("/nick ")) {
-			// 			String[] messageSplit = message.split(" ", 2);
-			// 			if (messageSplit.length == 2) {
-			// 				broadcast(color + " renamed himselfe to " + messageSplit[1]);
-			// 				System.out.println(color + " renamed themselves to " + messageSplit[1]);
-			// 				color = messageSplit[1];
-			// 				out.println("Successfully changeg nicname to " + color);
-			// 			} else {
-			// 				out.println("No valid nickname was provided");
-			// 			}
-			// 		} else if (message.startsWith("/quit")) {
-			// 			broadcast(color + " left the chat");
-			// 			shutdown();
-			// 		} else {
-			// 			broadcast(color + " : " + message);
-			// 		}
-			 	}
+
 			} catch (Exception e) {
 				shutdown();
 			}
@@ -135,6 +123,7 @@ public class SocketServer implements Runnable {
 				if (!client.isClosed()) {
 					client.close();
 				}
+
 			} catch (IOException ignore) {
 
 			}
