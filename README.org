@@ -1,8 +1,7 @@
 * Chees Game
-This is just a chess game made in java for fun
-
-** Future
-I was plannig on hosting this game on web with others games, like a game hub.
-
-** Obs
-For now it is not a complete chess game, neither has web functionalities
+This is just a chess game made in java, for fun
+* Usage
+#+BEGIN_SRC shell
+  ARG="run" # or ARG="test" if you wanna run the unit tests
+  ./build.sh $ARG
+#+END_SRC

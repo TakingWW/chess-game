@@ -1,9 +1,10 @@
 package test;
 
 import objects.Board;
+import objects.Color;
+import objects.IllegalMoveException;
 import objects.player.Player1;
 import objects.player.Player;
-import objects.IllegalMoveException;
 import objects.player.PlayerException;
 import objects.command.CommandException;
 import objects.Util;
@@ -501,7 +502,7 @@ public class TestBoard {
 			board.playMove("pe5");
 			board.playMove("nf3");
 			board.playMove("/ff");
-			if (!Util.gameOver | !(Util.winner instanceof Player1)) throw new CommandException("Game did not end as expected");
+			if (!Util.gameOver | !(Util.winner.getColor() == Color.WHITE)) throw new CommandException("Game did not end as expected");
 		} catch (IllegalMoveException | CommandException e) {
 			success = false;
 		}

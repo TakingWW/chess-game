@@ -6,6 +6,7 @@ public abstract class Util {
 	public static boolean gameOver = false;
 	public static Player winner = null;
 	public static boolean test = false;
+	public static boolean reload = false;
 
 	public static void print(String message) {
 		if (!test) System.out.println(message);

@@ -23,7 +23,7 @@ import static objects.Util.*;
 public class Board {
     private Player player;
     private Player toPlay;
-    private Player bot = new Bot();
+    private Player bot;
     private List<Square> squares = new ArrayList<>(64);
 	private HashMap<Color, HashSet<Position>> attackedPositions = new HashMap<>();
 
@@ -31,6 +31,11 @@ public class Board {
 
     public Board(Player player) throws PlayerException {
 		this.player = player;
+		this.bot = new Bot(player);
+
+		if (player.getColor() == Color.WHITE) toPlay = player;
+		else toPlay = bot;
+
 		for (int j = 0; j < 8; j++) {
 			for (int i = 0; i < 8; i++) {
 				Square square;

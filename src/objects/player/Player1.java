@@ -40,4 +40,9 @@ public class Player1 implements Player {
 		Player other = (Player) o;
 		return other.getColor() == color;
     }
+
+	@Override
+	public String toString() {
+		return "Player with the " + getColor().print() + " pieces";
+	}
 }
