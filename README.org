@@ -6,8 +6,9 @@ You can use the command line to run the game. This can be made easily as follows
 
 #+BEGIN_SRC shell
   # Build and run the application (start the game)
-  ./build.sh run
+  ./build.sh
+  java -jar target/output/chess-game.jar run
 
-  # Build and test the application
-  ./build.sh test
+  # Or test the application
+  java -jar target/output/chess-game.jar test
 #+END_SRC
