@@ -10,13 +10,13 @@ public enum Color {
 	public String toString() {
 		switch(this) {
 			case BLACK:
-				return "\u001B[90m";
-			case WHITE:
-				return "\u001B[37m";
-			case RED:
-				return "\u001B[31m";
-			case GREEN:
 				return "\u001B[32m";
+			case WHITE:
+				return "\u001B[31m";
+			case RED:
+				return "\u001B[1;31m";
+			case GREEN:
+				return "\u001B[1;32m";
 			default:
 				return "";
 		}

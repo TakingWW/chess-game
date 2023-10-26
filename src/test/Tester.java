@@ -9,7 +9,7 @@ import objects.Color;
 import static objects.Util.*;
 
 public class Tester {
-	public Tester() throws TestException {
+	public Tester() {
 		TestBoard test = new TestBoard();
 		Class<?> testClass = test.getClass();
 		int failedCount = 0;
@@ -25,7 +25,7 @@ public class Tester {
 						log("Failed", Color.RED, method.getName());
 						failedCount++;
 					} else {
-						log("Succeed", Color.GREEN, method.getName());
+						log("Passed", Color.GREEN, method.getName());
 					}
 
 				} catch (IllegalAccessException e) {
@@ -36,6 +36,6 @@ public class Tester {
 			}
 		}
 
-		if (failedCount > 0) throw new TestException("" + failedCount + " test methods failed");
+		if (failedCount > 0) log("\n       " + failedCount, Color.RED, "failed");
 	}
 }

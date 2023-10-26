@@ -1,13 +1,13 @@
 import static objects.Util.*;
+import objects.Board;
+import objects.Color;
+import objects.IllegalMoveException;
 import objects.player.Player1;
 import objects.player.Player;
-import objects.Board;
 import objects.player.PlayerException;
-import objects.IllegalMoveException;
+import objects.command.CommandException;
 import net.SocketClient;
 import test.Tester;
-import test.TestException;
-import objects.command.CommandException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.io.File;
 
 public class Main {
-    public static void main(String[] args) throws PlayerException, TestException {
+    public static void main(String[] args) throws PlayerException {
 		if (args.length > 0) {
 			switch(args[0]) {
 				case "test":
@@ -25,6 +25,7 @@ public class Main {
 					break;
 				case "run":
 					execute();
+
 					break;
 				case "net":
 					SocketClient client = new SocketClient();
@@ -55,10 +56,13 @@ public class Main {
 
 			String lance = System.console().readLine();
 
+			printf("\033[H\033[2J");
+			print("");
 			try {
 				board.playMove(lance);
+				print("");
 			} catch (IllegalMoveException | CommandException e) {
-				e.printStackTrace();
+				log("Error", Color.RED, ": " + e.getMessage());
 			}
 		}
 
